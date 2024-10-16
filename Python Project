@@ -1,0 +1,94 @@
+import tkinter as tk
+from tkinter import filedialog, messagebox
+from PIL import Image, ImageTk, ImageFilter, ImageEnhance
+
+class ImageEditor:
+    def _init_(self, root):
+        self.root = root
+        self.root.title("Simple Image Editor")
+
+        self.image = None
+        self.image_path = ""
+
+        self.canvas = tk.Canvas(root, width=800, height=600, bg='gray')
+        self.canvas.pack()
+
+        self.button_frame = tk.Frame(root)
+        self.button_frame.pack()
+
+        self.open_button = tk.Button(self.button_frame, text="Open", command=self.open_image)
+        self.open_button.pack(side=tk.LEFT)
+
+        self.save_button = tk.Button(self.button_frame, text="Save", command=self.save_image)
+        self.save_button.pack(side=tk.LEFT)
+
+        self.grayscale_button = tk.Button(self.button_frame, text="Grayscale", command=self.apply_grayscale)
+        self.grayscale_button.pack(side=tk.LEFT)
+
+        self.blur_button = tk.Button(self.button_frame, text="Blur", command=self.apply_blur)
+        self.blur_button.pack(side=tk.LEFT)
+
+        self.crop_button = tk.Button(self.button_frame, text="Crop", command=self.crop_image)
+        self.crop_button.pack(side=tk.LEFT)
+
+        self.filter_button = tk.Button(self.button_frame, text="Apply Filter", command=self.apply_filter)
+        self.filter_button.pack(side=tk.LEFT)
+def open_image(self):
+        self.image_path = filedialog.askopenfilename(filetypes=[("Image Files", ".png;.jpg;.jpeg;.bmp")])
+        if self.image_path:
+            self.image = Image.open(self.image_path)
+            self.display_image(self.image)
+
+def save_image(self):
+        if self.image:
+            save_path = filedialog.asksaveasfilename(defaultextension=".png",
+                                                     filetypes=[("PNG files", "*.png"),
+                                                                ("JPEG files", ".jpg;.jpeg"),
+                                                                ("BMP files", "*.bmp")])
+            if save_path:
+                self.image.save(save_path)
+        else:
+            messagebox.showerror("Error", "No image to save")
+
+def display_image(self, img):
+        img.thumbnail((800, 600))
+        self.img_tk = ImageTk.PhotoImage(img)
+        self.canvas.delete("all")  # Clear previous images on canvas
+        self.canvas.create_image(400, 300, image=self.img_tk, anchor=tk.CENTER)
+
+def apply_grayscale(self):
+        if self.image:
+            self.image = self.image.convert("L")
+            self.display_image(self.image)
+        else:
+            messagebox.showerror("Error", "No image loaded")
+def apply_blur(self):
+        if self.image:
+            self.image = self.image.filter(ImageFilter.BLUR)
+            self.display_image(self.image)
+        else:
+            messagebox.showerror("Error", "No image loaded")
+def crop_image(self):
+        if self.image:
+            width, height = self.image.size
+            left = width * 0.25
+            top = height * 0.25
+            right = width * 0.75
+            bottom = height * 0.75
+            self.image = self.image.crop((left, top, right, bottom))
+            self.display_image(self.image)
+        else:
+            messagebox.showerror("Error", "No image loaded")
+
+def apply_filter(self):
+        if self.image:
+            self.image = self.image.filter(ImageFilter.EMBOSS)
+            self.display_image(self.image)
+        else:
+            messagebox.showerror("Error", "No image loaded")
+
+if _name_ == "_main_":
+    root = tk.Tk()
+    app = ImageEditor(root)
+    root.mainloop()
+
